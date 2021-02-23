@@ -1,0 +1,32 @@
+{
+  "name": "YDImageBrowser",
+  "version": "0.1.0",
+  "summary": "iOS自定义图片浏览器，支持CocoaPods.",
+  "homepage": "https://github.com/yangdong@163.com/YDImageBrowser",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "yangdong@163.com": "yangdong@163.com"
+  },
+  "source": {
+    "git": "https://github.com/yangdong@163.com/YDImageBrowser.git",
+    "tag": "0.1.0"
+  },
+  "default_subspecs": "YY",
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source_files": "YDImageBrowser/Classes/**/*",
+  "subspecs": [
+    {
+      "name": "YY",
+      "dependencies": {
+        "YYWebImage": [
+
+        ]
+      }
+    }
+  ]
+}

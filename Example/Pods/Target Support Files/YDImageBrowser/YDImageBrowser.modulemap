@@ -1,0 +1,6 @@
+framework module YDImageBrowser {
+  umbrella header "YDImageBrowser-umbrella.h"
+
+  export *
+  module * { export * }
+}
