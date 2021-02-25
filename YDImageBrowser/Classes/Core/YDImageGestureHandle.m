@@ -113,7 +113,7 @@
                 CGRect frame = photoImageView.frame;
                 frame.origin.x -= zoomView.contentOffset.x;
                 frame.origin.y -= zoomView.contentOffset.y;
-                
+                [zoomView resetScale];
                 photoImageView.frame = frame;
                 
                 if ([self.delegate respondsToSelector:@selector(imageViewDismiss)]) {
@@ -125,6 +125,7 @@
                 [UIView animateWithDuration:0.2 animations:^{
                     
                     photoImageView.center = self.transitionImgViewCenter;
+                    [zoomView resetScale];
                     photoImageView.transform = CGAffineTransformMakeScale(1, 1);
                     window.alpha = 1;
                 } completion:^(BOOL finished) {

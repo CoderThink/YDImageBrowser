@@ -32,6 +32,13 @@
 
 - (void)initView
 {
+    imageManagerClass = NSClassFromString(@"YDSDWebImageManager");
+    if (!imageManagerClass) {
+        imageManagerClass = NSClassFromString(@"YDYYWebImageManager");
+    }
+    if (imageManagerClass) {
+        self.imageProtocol = [imageManagerClass new];
+    }
     _imageState = YDShowImageStateSmall;
     self.directionalLockEnabled = YES;
     self.minimumZoomScale = 1.f;
@@ -70,12 +77,10 @@
         placeholderImage = [self.zoomDelegate imageZoomViewPlaceholderImage];
     }
     [self.activityIndicator startAnimating];
-    [_imageView yy_setImageWithURL:[NSURL URLWithString:_photoModel.originUrl]
-                       placeholder:placeholderImage
-                           options:kNilOptions
-                          progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+    
+    [self.imageProtocol yd_setImageWithImageView:_imageView imageURL:[NSURL URLWithString:_photoModel.originUrl] placeholder:placeholderImage progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         
-    }transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+    } completion:^(UIImage * _Nullable image, NSURL * _Nullable url, BOOL finished, NSError * _Nullable error) {
         [self.activityIndicator stopAnimating];
         self.originButton.hidden = YES;
     }];
@@ -129,47 +134,49 @@
         return;
     }
     
-    BOOL hasOriginImageCache = [[YYImageCache sharedCache] containsImageForKey:photoModel.originUrl];
+    UIImage *originImage = [self.imageProtocol imageMemoryWithURL:[NSURL URLWithString:photoModel.originUrl]];
+    if (originImage) {
+        [self becomeBigStateImage:originImage animation:YES];
+        self.imageState = YDShowImageStateOrigin;
+        self.originButton.hidden = YES;
+        return;
+    }
     // 1，检测原图
-    if (photoModel.originUrl && hasOriginImageCache) {
+    if (photoModel.originUrl) {
         
-        [_imageView yy_setImageWithURL:[NSURL URLWithString:photoModel.originUrl]
-                           placeholder:placeholderImage
-                               options:kNilOptions
-                              progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        [self.imageProtocol yd_setImageWithImageView:_imageView imageURL:[NSURL URLWithString:photoModel.originUrl] placeholder:placeholderImage progress:^(NSInteger receivedSize, NSInteger expectedSize) {
             self.process = (CGFloat)receivedSize/(CGFloat)expectedSize;
-        }
-                             transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+        } completion:^(UIImage * _Nullable image, NSURL * _Nullable url, BOOL finished, NSError * _Nullable error) {
             if (image) {
-                [self becomeBigStateImage:self.imageView.image animation:YES];
+                [self becomeBigStateImage:image animation:YES];
                 self.imageState = YDShowImageStateOrigin;
                 self.originButton.hidden = YES;
-            }
-            else {// 处理大图加载失效情况
-                
+            }else {// 处理大图加载失效情况
+
             }
         }];
+        
     }else if (photoModel.url) { // 2，加载普通图片
         
-        BOOL hasThumbImageCache = [[YYImageCache sharedCache] containsImageForKey:photoModel.url];
-        if (!hasThumbImageCache) {
-            [self.activityIndicator startAnimating];
+        UIImage *image = [self.imageProtocol imageMemoryWithURL:[NSURL URLWithString:photoModel.url]];
+        if (image) {
+            [self becomeBigStateImage:image animation:YES];
+            self.imageState = YDShowImageStateBig;
+            return;
         }
-        [_imageView yy_setImageWithURL:[NSURL URLWithString:photoModel.url]
-                           placeholder:placeholderImage
-                               options:kNilOptions
-                              progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        [self.activityIndicator startAnimating];
+        [self.imageProtocol yd_setImageWithImageView:_imageView imageURL:[NSURL URLWithString:photoModel.url] placeholder:placeholderImage progress:^(NSInteger receivedSize, NSInteger expectedSize) {
             
-        } transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+        } completion:^(UIImage * _Nullable image, NSURL * _Nullable url, BOOL finished, NSError * _Nullable error) {
             [self.activityIndicator stopAnimating];
             if (image) {
-                [self becomeBigStateImage:self.imageView.image animation:YES];
+                [self becomeBigStateImage:image animation:YES];
                 self.imageState = YDShowImageStateBig;
-            }
-            else {// 处理普通图加载失败的情况
-                
+            }else {// 处理普通图加载失败的情况
+
             }
         }];
+        
     }else {
         _imageView.image = placeholderImage;
         [self becomeBigStateImage:_imageView.image animation:YES];
@@ -195,11 +202,11 @@
         frame.origin.y = KScreenH - 10 - frame.size.height;
         _originButton.frame = frame;
     }
-    
-    BOOL hasOriginImageCache = [[YYImageCache sharedCache] containsImageForKey:_photoModel.originUrl];
+
+    UIImage *originImage = [self.imageProtocol imageMemoryWithURL:[NSURL URLWithString:_photoModel.originUrl]];
     
     // 图片有原图链接，并且本地有缓存，直接加载原图
-    if (_photoModel.originUrl && hasOriginImageCache) {
+    if (_photoModel.originUrl && originImage) {
         _originButton.hidden = NO;
     }else if (_photoModel.originUrl) { // 有原图，但是本地没有缓存，显示加载原图按钮
         _originButton.hidden = NO;
@@ -246,10 +253,10 @@
     }
     
     if (animation) {
-        if (_imageView.image) {
-            _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        if (self.imageView.image) {
+            self.imageView.contentMode = UIViewContentModeScaleAspectFill;
             [UIView animateWithDuration:kAnimationDuration animations:^{
-                self.imageView.frame = CGRectMake(toFrame.origin.x + kImageViewPadding, toFrame.origin.y, toFrame.size.width, toFrame.size.height);
+                self.imageView.frame = CGRectMake(toFrame.origin.x+self.contentOffset.x + kImageViewPadding, toFrame.origin.y+self.contentOffset.y, toFrame.size.width, toFrame.size.height);
             }];
         }
     }

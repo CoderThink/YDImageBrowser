@@ -8,11 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "YDImageModel.h"
-#if __has_include(<YYWebImage/YYWebImage.h>)
-#import <YYWebImage/YYWebImage.h>
-#else
-#import "YYWebImage.h"
-#endif
+#import "YDWebImageProtocol.h"
+
+static Class imageManagerClass = nil;
 
 typedef NS_ENUM(NSInteger, YDShowImageState) {
     YDShowImageStateSmall,    // 初始化默认是小图
@@ -34,6 +32,7 @@ typedef NS_ENUM(NSInteger, YDShowImageState) {
 @interface YDImageZoomView : UIScrollView <UIScrollViewDelegate>
 
 @property (nonatomic, weak) id <YDImageZoomViewDelegate> zoomDelegate;
+@property (nonatomic, strong) id<YDWebImageProtocol> imageProtocol;
 @property (nonatomic, strong, readonly) UIImageView *imageView;
 @property (nonatomic, assign) YDShowImageState imageState;
 @property (nonatomic, assign) CGFloat process;

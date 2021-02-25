@@ -1,7 +1,7 @@
 PODS:
-  - YDImageBrowser (0.1.0):
-    - YDImageBrowser/YY (= 0.1.0)
+  - YDImageBrowser/Core (0.1.0)
   - YDImageBrowser/YY (0.1.0):
+    - YDImageBrowser/Core
     - YYWebImage
   - YYCache (1.0.4)
   - YYImage (1.0.4):
@@ -12,8 +12,7 @@ PODS:
     - YYImage
 
 DEPENDENCIES:
-  - YDImageBrowser (from `../`)
-  - YYWebImage
+  - YDImageBrowser/YY (from `../`)
 
 SPEC REPOS:
   trunk:
@@ -26,11 +25,11 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  YDImageBrowser: c440885c8fb3673fb16983a32f4063fe74b4b473
+  YDImageBrowser: 07f8c820999cb6eb392a3c29d3727d67ef92a6bc
   YYCache: 8105b6638f5e849296c71f331ff83891a4942952
   YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
   YYWebImage: 5f7f36aee2ae293f016d418c7d6ba05c4863e928
 
-PODFILE CHECKSUM: 8e9554335f9238596cd676ffe6a6c51a339f6fa9
+PODFILE CHECKSUM: 43392b9d2fae2ed1ca44187177e48be3295d7b3f
 
 COCOAPODS: 1.10.1

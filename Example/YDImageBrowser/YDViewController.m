@@ -20,24 +20,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+    self.navigationItem.title = @"Main";
     [self initView];
 }
 
 - (void)initView
 {
     self.view.backgroundColor = [UIColor whiteColor];
-    CGFloat scr_w = [UIScreen mainScreen].bounds.size.width;
-    CGFloat scr_h = [UIScreen mainScreen].bounds.size.height;
-    CGRect frame = CGRectMake(0, 0, scr_w, scr_h);
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    _collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
     [_collectionView registerClass:[YDHomeCell class] forCellWithReuseIdentifier:@"YDHomeCell"];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     _collectionView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_collectionView];
+    
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -55,7 +53,6 @@
     else if ([obj isKindOfClass:[NSString class]]) {
         [cell updateImageURL:(NSString *)obj];
     }
-    
     return cell;
 }
 

@@ -3,7 +3,7 @@
 //  YDImageBrowser
 //
 //  Created by Think on 2020/8/2.
-//  Copyright © 2021 YD. All rights reserved.
+//  Copyright © 2020 YD. All rights reserved.
 //
 
 #import "YDImageBrowserMacro.h"

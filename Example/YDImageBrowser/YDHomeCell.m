@@ -7,7 +7,6 @@
 //
 
 #import "YDHomeCell.h"
-#import <YYWebImage.h>
 
 @interface YDHomeCell ()
 
@@ -31,6 +30,14 @@
     _imageView.contentMode = UIViewContentModeScaleAspectFill;
     _imageView.clipsToBounds = YES;
     [self.contentView addSubview:_imageView];
+    
+    imageManagerClass = NSClassFromString(@"YDSDWebImageManager");
+    if (!imageManagerClass) {
+        imageManagerClass = NSClassFromString(@"YDYYWebImageManager");
+    }
+    if (imageManagerClass) {
+        self.imageProtocol = [imageManagerClass new];
+    }
 }
 
 - (void)updateImage:(UIImage *)image;
@@ -40,7 +47,9 @@
 
 - (void)updateImageURL:(NSString *)URLString
 {
-    [_imageView yy_setImageWithURL:[NSURL URLWithString:URLString] options:kNilOptions];
+    [self.imageProtocol yd_setImageWithImageView:_imageView imageURL:[NSURL URLWithString:URLString] placeholder:nil progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+    } completion:^(UIImage * _Nullable image, NSURL * _Nullable url, BOOL finished, NSError * _Nullable error) {
+    }];
 }
 
 - (void)layoutSubviews

@@ -3,8 +3,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target 'YDImageBrowser_Example' do
-  pod 'YDImageBrowser', :path => '../'
-  pod 'YYWebImage'
+  pod 'YDImageBrowser/YY', :path => '../'
   
   target 'YDImageBrowser_Tests' do
     inherit! :search_paths

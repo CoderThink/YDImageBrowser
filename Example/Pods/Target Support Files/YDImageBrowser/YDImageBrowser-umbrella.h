@@ -15,6 +15,8 @@
 #import "YDImageGestureHandle.h"
 #import "YDImageModel.h"
 #import "YDImageZoomView.h"
+#import "YDWebImageProtocol.h"
+#import "YDYYWebImageManager.h"
 
 FOUNDATION_EXPORT double YDImageBrowserVersionNumber;
 FOUNDATION_EXPORT const unsigned char YDImageBrowserVersionString[];

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "YDImageModel.h"
+#import "YDWebImageProtocol.h"
+
 @class YDImageBrowserController;
 
 @protocol YDImageBrowserControllerDelegate <NSObject>

@@ -7,11 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YDWebImageProtocol.h"
+
+static Class imageManagerClass = nil;
 
 @interface YDHomeCell : UICollectionViewCell
 
 @property (nonatomic, strong, readonly) UIImageView *imageView;
 - (void)updateImage:(UIImage *)image;
 - (void)updateImageURL:(NSString *)URLString;
+
+@property (nonatomic, strong) id<YDWebImageProtocol> imageProtocol;
 
 @end
