@@ -22,7 +22,7 @@ pod 'YDImageBrowser'
 
 ## Author
 
-yangdong@163.com, yangdong@163.com
+269248588@qq.com
 
 ## License
 
